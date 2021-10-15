@@ -17,7 +17,7 @@ class PublicTagsApiTests(TestCase):
 
     def test_login_required(self):
         """Test that login is needed for reading tags"""
-        res = self.clinet.get(TAGS_URL)
+        res = self.client.get(TAGS_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -30,7 +30,7 @@ class PrivateTagsApiTests(TestCase):
             'password123'
         )
         self.client = APIClient()
-        self.client.force_authentication(self.user)
+        self.client.force_authenticate(self.user)
 
     def test_retrieve_tags(self):
         """Test retrieving tags"""
@@ -43,6 +43,7 @@ class PrivateTagsApiTests(TestCase):
         serializer = TagSerializer(tags, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
 
     def test_tags_limited_to_user(self):
         """Test that returned tags are for the authenticated user"""
